@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simple Rhythm Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Rhythm Game (4キー: D F J K)</h1>
+      <div class="controls">
+        <div class="row">
+          <label>MP3のURL（GitHub Raw推奨）</label>
+          <input id="urlInput" type="url" placeholder="https://raw.githubusercontent.com/user/repo/branch/path/song.mp3" />
+        </div>
+        <div class="row">
+          <label>またはローカルMP3を選択</label>
+          <input id="fileInput" type="file" accept="audio/mpeg,audio/mp3" />
+        </div>
+        <div class="row buttons">
+          <button id="analyzeBtn">譜面を自動生成</button>
+          <button id="startBtn" disabled>スタート</button>
+          <button id="pauseBtn" disabled>一時停止/再開</button>
+          <button id="restartBtn" disabled>リスタート</button>
+        </div>
+        <div id="status"></div>
+      </div>
+
+      <div class="game-wrap">
+        <canvas id="game" width="480" height="720"></canvas>
+        <div class="hud">
+          <div>Score: <span id="score">0</span></div>
+          <div>Combo: <span id="combo">0</span> / Max <span id="maxCombo">0</span></div>
+          <div>Accuracy: <span id="acc">0.00%</span></div>
+          <div>BPM(推定): <span id="bpm">-</span></div>
+        </div>
+      </div>
+
+      <p class="hint">
+        ヒント: GitHubのMP3は「Raw」URLを使ってください。例: https://raw.githubusercontent.com/&lt;user&gt;/&lt;repo&gt;/&lt;branch&gt;/path/song.mp3
+      </p>
+    </div>
+
+    <audio id="player" crossorigin="anonymous"></audio>
+    <script src="script.js"></script>
+  </body>
+  </html>
+

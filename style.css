@@ -1,0 +1,21 @@
+:root{
+  --bg:#0e0f14; --fg:#e7e9ee; --muted:#9aa0aa;
+  --lane1:#4fc3f7; --lane2:#ff8a65; --lane3:#aed581; --lane4:#ce93d8;
+  --hit:#ffffff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+.container{max-width:960px;margin:24px auto;padding:0 16px}
+h1{font-size:24px;margin:0 0 12px}
+.controls{background:#171922;border:1px solid #232536;border-radius:10px;padding:12px}
+.row{display:flex;gap:12px;align-items:center;margin:8px 0}
+.row label{min-width:220px;color:var(--muted)}
+.row input{flex:1;padding:8px 10px;border-radius:8px;border:1px solid #2b2e3f;background:#0f1118;color:var(--fg)}
+.buttons button{padding:10px 12px;border-radius:10px;border:1px solid #2b2e3f;background:#202336;color:var(--fg);cursor:pointer}
+.buttons button:disabled{opacity:.5;cursor:not-allowed}
+#status{margin-top:6px;color:var(--muted)}
+.game-wrap{position:relative;margin-top:16px;display:flex;gap:16px;align-items:flex-start}
+#game{background:#0b0c10;border:1px solid #24273a;border-radius:10px}
+.hud{display:flex;flex-direction:column;gap:6px}
+.hint{color:var(--muted)}
+
