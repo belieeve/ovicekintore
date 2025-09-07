@@ -19,6 +19,7 @@
   const audioEl = document.getElementById('player');
   const keybarEl = document.getElementById('keybar');
   const useAssetsBtn = document.getElementById('useAssetsBtn');
+  const useAssetsBtn2 = document.getElementById('useAssetsBtn2');
 
   // Canvas scaling for HiDPI
   function resizeCanvas() {
@@ -460,6 +461,12 @@
     useAssetsBtn.addEventListener('click', () => {
       urlInput.value = 'assets/ovicekintoresong1.mp3';
       setStatus('assets/ovicekintoresong1.mp3 をURL欄にセットしました');
+    });
+  }
+  if (useAssetsBtn2) {
+    useAssetsBtn2.addEventListener('click', () => {
+      urlInput.value = 'assets/ovicekintoresong2.mp3';
+      setStatus('assets/ovicekintoresong2.mp3 をURL欄にセットしました');
     });
   }
 
