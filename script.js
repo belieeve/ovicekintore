@@ -28,7 +28,6 @@
   const btnBackStart = document.getElementById('btnBackStart');
   const btnBackSong = document.getElementById('btnBackSong');
   const btnBackLevel = document.getElementById('btnBackLevel');
-  const useAssetsBtn2 = document.getElementById('useAssetsBtn2');
 
   // Canvas scaling for HiDPI
   function resizeCanvas() {
