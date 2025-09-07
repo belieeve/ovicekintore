@@ -344,13 +344,17 @@
       ctx.fill();
     }
     ctx.restore();
-    // Center hit line
-    ctx.strokeStyle = '#ffffff44';
+    // Center hit line + soft glow
+    ctx.save();
+    ctx.strokeStyle = '#ffffff66';
     ctx.lineWidth = 2;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#fff';
     ctx.beginPath();
     ctx.moveTo(0, HITLINE_Y);
     ctx.lineTo(W, HITLINE_Y);
     ctx.stroke();
+    ctx.restore();
 
     // Notes
     for (const note of chart) {
@@ -361,9 +365,18 @@
       const y = HITLINE_Y - (dt / NOTE_LEAD) * TRAVEL;
       // Only draw around screen
       if (y < -40 || y > H + 40) continue;
-      ctx.fillStyle = LANE_COLORS[note.lane];
       const w = laneWidth * 0.7;
       const h = 16;
+      // Glow layer
+      ctx.save();
+      ctx.globalAlpha = 0.95;
+      ctx.fillStyle = LANE_COLORS[note.lane];
+      ctx.shadowBlur = 16;
+      ctx.shadowColor = LANE_COLORS[note.lane];
+      ctx.fillRect(laneX - w / 2, y - h / 2, w, h);
+      ctx.restore();
+      // Core layer (crisper)
+      ctx.fillStyle = LANE_COLORS[note.lane];
       ctx.fillRect(laneX - w / 2, y - h / 2, w, h);
     }
   }
