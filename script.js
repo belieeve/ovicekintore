@@ -557,13 +557,13 @@
   if (useAssetsBtn) {
     useAssetsBtn.addEventListener('click', () => {
       urlInput.value = 'assets/ovicekintoresong1.mp3';
-      setStatus('assets/ovicekintoresong1.mp3 をURL欄にセットしました');
+      setStatus('『画面の向こう、汗をかこう！』を選択しました');
     });
   }
   if (useAssetsBtn2) {
     useAssetsBtn2.addEventListener('click', () => {
       urlInput.value = 'assets/ovicekintoresong2.mp3';
-      setStatus('assets/ovicekintoresong2.mp3 をURL欄にセットしました');
+      setStatus('『oviceで会えた奇跡』を選択しました');
     });
   }
 

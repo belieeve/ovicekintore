@@ -10,7 +10,7 @@
      - 例: `https://raw.githubusercontent.com/<user>/<repo>/<branch>/path/to/song.mp3`
    - ローカルのMP3ファイルを選択
    - リポジトリ内 `assets/ovicekintoresong1.mp3` / `assets/ovicekintoresong2.mp3` を利用（相対URL）
-     - 「assetsサンプル1」「assetsサンプル2」ボタンでURL欄に自動入力
+     - 「画面の向こう、汗をかこう！」「oviceで会えた奇跡」ボタンでURL欄に自動入力
 3. 「譜面を自動生成」を押すと、音源を解析してノーツが作成されます。
 4. レベルを選択（EASY / NORMAL / HARD）。
 5. ゲーム画面で「スタート」を押してプレイ開始。キーボード D / F / J / K で叩きます。
