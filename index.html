@@ -18,45 +18,84 @@
         </span>
         Ovice Kintore Rhythm (4キー: D F J K)
       </h1>
-      <div class="controls">
-        <div class="row">
-          <label>MP3のURL（GitHub Raw推奨）</label>
-          <input id="urlInput" type="url" placeholder="https://raw.githubusercontent.com/user/repo/branch/path/song.mp3 または assets/ovicekintoresong1.mp3 / assets/ovicekintoresong2.mp3" />
-          <button id="useAssetsBtn" title="assets/ovicekintoresong1.mp3 をセット">assetsサンプル1</button>
-          <button id="useAssetsBtn2" title="assets/ovicekintoresong2.mp3 をセット">assetsサンプル2</button>
+      <!-- Screen 1: Start -->
+      <section id="screen-start" class="screen active">
+        <div class="panel center">
+          <h2>トレーニング開始</h2>
+          <p class="muted">筋トレリズムに合わせて叩こう！</p>
+          <div class="buttons">
+            <button id="btnGoSong" class="accent">ゲームスタート</button>
+          </div>
         </div>
-        <div class="row">
-          <label>またはローカルMP3を選択</label>
-          <input id="fileInput" type="file" accept="audio/mpeg,audio/mp3" />
-        </div>
-        <div class="row buttons">
-          <button id="analyzeBtn">譜面を自動生成</button>
-          <button id="startBtn" disabled>スタート</button>
-          <button id="pauseBtn" disabled>一時停止/再開</button>
-          <button id="restartBtn" disabled>リスタート</button>
-        </div>
-        <div id="status"></div>
-      </div>
+      </section>
 
-      <div class="game-wrap">
-        <canvas id="game" width="480" height="720"></canvas>
-        <div class="keybar" id="keybar" aria-label="On-screen keys">
-          <button class="key" data-lane="0" aria-label="Lane 1 (D)">D</button>
-          <button class="key" data-lane="1" aria-label="Lane 2 (F)">F</button>
-          <button class="key" data-lane="2" aria-label="Lane 3 (J)">J</button>
-          <button class="key" data-lane="3" aria-label="Lane 4 (K)">K</button>
+      <!-- Screen 2: Song Select -->
+      <section id="screen-song" class="screen">
+        <div class="controls">
+          <div class="row">
+            <label>曲を選択（assets 推奨）</label>
+            <div class="song-buttons">
+              <button id="useAssetsBtn" title="assets/ovicekintoresong1.mp3">assetsサンプル1</button>
+              <button id="useAssetsBtn2" title="assets/ovicekintoresong2.mp3">assetsサンプル2</button>
+            </div>
+          </div>
+          <div class="row">
+            <label>URLで指定（GitHub Raw等）</label>
+            <input id="urlInput" type="url" placeholder="https://raw.githubusercontent.com/user/repo/branch/path/song.mp3 または assets/ovicekintoresong1.mp3" />
+          </div>
+          <div class="row">
+            <label>またはローカルMP3を選択</label>
+            <input id="fileInput" type="file" accept="audio/mpeg,audio/mp3" />
+          </div>
+          <div class="row buttons">
+            <button id="btnToLevel" class="accent">次へ（レベル選択）</button>
+            <button id="btnBackStart">戻る</button>
+          </div>
+          <div id="status"></div>
         </div>
-        <div class="hud">
-          <div>Score: <span id="score">0</span></div>
-          <div>Combo: <span id="combo">0</span> / Max <span id="maxCombo">0</span></div>
-          <div>Accuracy: <span id="acc">0.00%</span></div>
-          <div>BPM(推定): <span id="bpm">-</span></div>
-        </div>
-      </div>
+      </section>
 
-      <p class="hint">
-        ヒント: GitHubのMP3は「Raw」URLを使ってください。例: https://raw.githubusercontent.com/&lt;user&gt;/&lt;repo&gt;/&lt;branch&gt;/path/song.mp3
-      </p>
+      <!-- Screen 3: Level Select -->
+      <section id="screen-level" class="screen">
+        <div class="panel center">
+          <h2>レベルを選択</h2>
+          <div class="level-buttons">
+            <button class="level" data-level="easy">EASY</button>
+            <button class="level" data-level="normal">NORMAL</button>
+            <button class="level" data-level="hard">HARD</button>
+          </div>
+          <div class="buttons">
+            <button id="btnBackSong">曲選択へ戻る</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 4: Game -->
+      <section id="screen-game" class="screen">
+        <div class="game-wrap">
+          <canvas id="game" width="480" height="720"></canvas>
+          <div class="keybar" id="keybar" aria-label="On-screen keys">
+            <button class="key" data-lane="0" aria-label="Lane 1 (D)">D</button>
+            <button class="key" data-lane="1" aria-label="Lane 2 (F)">F</button>
+            <button class="key" data-lane="2" aria-label="Lane 3 (J)">J</button>
+            <button class="key" data-lane="3" aria-label="Lane 4 (K)">K</button>
+          </div>
+          <div class="hud">
+            <div>Score: <span id="score">0</span></div>
+            <div>Combo: <span id="combo">0</span> / Max <span id="maxCombo">0</span></div>
+            <div>Accuracy: <span id="acc">0.00%</span></div>
+            <div>BPM(推定): <span id="bpm">-</span></div>
+          </div>
+        </div>
+        <div class="controls">
+          <div class="row buttons">
+            <button id="pauseBtn" disabled>一時停止/再開</button>
+            <button id="restartBtn" disabled>リスタート</button>
+            <button id="btnBackLevel">レベル選択へ戻る</button>
+          </div>
+          <div class="hint">D / F / J / K でプレイ。タップもOK。</div>
+        </div>
+      </section>
     </div>
 
     <audio id="player" crossorigin="anonymous"></audio>

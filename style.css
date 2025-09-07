@@ -52,3 +52,17 @@ h1{font-size:24px;margin:0 0 12px;display:flex;gap:10px;align-items:center}
 .keybar .key.active[data-lane="1"]{ background: var(--lane2); box-shadow:0 0 18px #42a5f588; }
 .keybar .key.active[data-lane="2"]{ background: var(--lane3); box-shadow:0 0 18px #fdd83588; }
 .keybar .key.active[data-lane="3"]{ background: var(--lane4); box-shadow:0 0 18px #ef535088; }
+
+/* Screens */
+.screen{ display:none; }
+.screen.active{ display:block; }
+.panel{ background:#171922;border:1px solid #232536;border-radius:12px;padding:20px }
+.panel.center{ text-align:center }
+.muted{ color:var(--muted) }
+.accent{ border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset }
+.song-buttons{ display:flex; gap:10px; flex-wrap:wrap }
+.level-buttons{ display:flex; gap:14px; justify-content:center; margin: 16px 0 }
+.level{ padding:14px 20px; border-radius:12px; border:2px solid #2b2e3f; background:#141726; color:var(--fg); font-weight:800 }
+.level[data-level="easy"]{ border-color:#66bb6a }
+.level[data-level="normal"]{ border-color:#42a5f5 }
+.level[data-level="hard"]{ border-color:#ef5350 }

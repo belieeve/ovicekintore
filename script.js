@@ -4,10 +4,9 @@
   const dpr = Math.max(1, window.devicePixelRatio || 1);
   const W = canvas.width;
   const H = canvas.height;
+  // Global controls and screens
   const urlInput = document.getElementById('urlInput');
   const fileInput = document.getElementById('fileInput');
-  const analyzeBtn = document.getElementById('analyzeBtn');
-  const startBtn = document.getElementById('startBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const restartBtn = document.getElementById('restartBtn');
   const statusEl = document.getElementById('status');
@@ -19,6 +18,16 @@
   const audioEl = document.getElementById('player');
   const keybarEl = document.getElementById('keybar');
   const useAssetsBtn = document.getElementById('useAssetsBtn');
+  const useAssetsBtn2 = document.getElementById('useAssetsBtn2');
+  const screenStart = document.getElementById('screen-start');
+  const screenSong = document.getElementById('screen-song');
+  const screenLevel = document.getElementById('screen-level');
+  const screenGame = document.getElementById('screen-game');
+  const btnGoSong = document.getElementById('btnGoSong');
+  const btnToLevel = document.getElementById('btnToLevel');
+  const btnBackStart = document.getElementById('btnBackStart');
+  const btnBackSong = document.getElementById('btnBackSong');
+  const btnBackLevel = document.getElementById('btnBackLevel');
   const useAssetsBtn2 = document.getElementById('useAssetsBtn2');
 
   // Canvas scaling for HiDPI
@@ -40,7 +49,7 @@
   // Gym-themed lane colors (plate colors): green, blue, yellow, red
   const LANE_COLORS = ['#66bb6a', '#42a5f5', '#fdd835', '#ef5350'];
   const HITLINE_Y = H - 140;
-  const NOTE_SPEED_LEAD = 2.2; // seconds from spawn to hitline
+  let NOTE_LEAD = 2.2; // seconds from spawn to hitline (varies by level)
   const TRAVEL = H - 200; // pixels traveled during NOTE_SPEED_LEAD
   const HIT_WINDOWS = {
     perfect: 0.05,
@@ -55,6 +64,8 @@
   let analyzed = false;
   let objectUrl = null; // for local file
   let bpmEstimate = null;
+  let autoStartNext = false;
+  let difficulty = 'normal';
 
   const scoreState = {
     score: 0,
@@ -234,11 +245,20 @@
     }
 
     // Assign lanes (round-robin with small randomness)
-    const notes = [];
+    let notes = [];
     let lane = 0;
     for (const t of times) {
       lane = (lane + (Math.random() < 0.2 ? 2 : 1)) % LANES;
       notes.push({ time: t, lane, hit: false, judged: false, result: null });
+    }
+    // Apply difficulty density
+    const keep = difficulty === 'easy' ? 0.5 : difficulty === 'hard' ? 1.0 : 0.75;
+    if (keep < 0.999) {
+      const filtered = [];
+      for (let i = 0; i < notes.length; i++) {
+        if (Math.random() <= keep) filtered.push(notes[i]);
+      }
+      notes = filtered;
     }
     return notes;
   }
@@ -270,9 +290,14 @@
         audioEl.src = url;
       }
 
-      startBtn.disabled = false;
       pauseBtn.disabled = true;
       restartBtn.disabled = true;
+      if (autoStartNext) {
+        autoStartNext = false;
+        // Navigate to game screen and start
+        showScreen('game');
+        startGame();
+      }
     } catch (e) {
       console.error(e);
       setStatus('解析に失敗しました: ' + (e?.message || e));
@@ -326,7 +351,7 @@
       if (note.judged && note.result === 'miss') continue; // hide late misses
       if (dt < -0.5 && !note.hit) continue; // long gone
       const laneX = (note.lane + 0.5) * laneWidth;
-      const y = HITLINE_Y - (dt / NOTE_SPEED_LEAD) * TRAVEL;
+      const y = HITLINE_Y - (dt / NOTE_LEAD) * TRAVEL;
       // Only draw around screen
       if (y < -40 || y > H + 40) continue;
       ctx.fillStyle = LANE_COLORS[note.lane];
@@ -474,8 +499,29 @@
     }
   });
 
-  analyzeBtn.addEventListener('click', analyze);
-  startBtn.addEventListener('click', startGame);
+  // Screen navigation helpers
+  function showScreen(name) {
+    const map = { start: screenStart, song: screenSong, level: screenLevel, game: screenGame };
+    for (const [k, el] of Object.entries(map)) {
+      if (!el) continue;
+      el.classList.toggle('active', k === name);
+    }
+    if (name === 'game') positionKeybar();
+  }
+
+  if (btnGoSong) btnGoSong.addEventListener('click', () => showScreen('song'));
+  if (btnBackStart) btnBackStart.addEventListener('click', () => showScreen('start'));
+  if (btnBackSong) btnBackSong.addEventListener('click', () => showScreen('song'));
+  if (btnBackLevel) btnBackLevel.addEventListener('click', () => showScreen('level'));
+
+  if (btnToLevel) {
+    btnToLevel.addEventListener('click', () => {
+      const hasUrl = urlInput && urlInput.value.trim().length > 0;
+      const hasFile = fileInput && fileInput.files && fileInput.files[0];
+      if (!hasUrl && !hasFile) { setStatus('曲を選択してください（assetsボタン・URL・ファイル）'); return; }
+      showScreen('level');
+    });
+  }
   pauseBtn.addEventListener('click', togglePause);
   restartBtn.addEventListener('click', restart);
   if (useAssetsBtn) {
@@ -490,6 +536,18 @@
       setStatus('assets/ovicekintoresong2.mp3 をURL欄にセットしました');
     });
   }
+
+  // Level selection → analyze → auto-start
+  document.querySelectorAll('.level').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lvl = btn.getAttribute('data-level') || 'normal';
+      difficulty = lvl;
+      NOTE_LEAD = (lvl === 'easy') ? 2.6 : (lvl === 'hard') ? 1.9 : 2.2;
+      autoStartNext = true;
+      showScreen('song'); // ensure status and source exist
+      analyze();
+    });
+  });
 
   // Click/Touch on on-screen keys
   if (keybarEl) {
