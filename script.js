@@ -9,6 +9,7 @@
   const fileInput = document.getElementById('fileInput');
   const pauseBtn = document.getElementById('pauseBtn');
   const restartBtn = document.getElementById('restartBtn');
+  const startBtn = document.getElementById('startBtn');
   const statusEl = document.getElementById('status');
   const scoreEl = document.getElementById('score');
   const comboEl = document.getElementById('combo');
@@ -19,6 +20,7 @@
   const keybarEl = document.getElementById('keybar');
   const useAssetsBtn = document.getElementById('useAssetsBtn');
   const useAssetsBtn2 = document.getElementById('useAssetsBtn2');
+  const analyzeBtn = document.getElementById('analyzeBtn');
   const screenStart = document.getElementById('screen-start');
   const screenSong = document.getElementById('screen-song');
   const screenLevel = document.getElementById('screen-level');
@@ -62,7 +64,7 @@
   let analyzed = false;
   let objectUrl = null; // for local file
   let bpmEstimate = null;
-  let autoStartNext = false;
+  let autoStartNext = false; // deprecated with explicit start button, kept for compatibility
   let difficulty = 'normal';
 
   const scoreState = {
@@ -290,11 +292,18 @@
 
       pauseBtn.disabled = true;
       restartBtn.disabled = true;
+      // Enable start button if we're on game screen
+      if (startBtn) startBtn.disabled = false;
+      // If an older flow requested auto start, respect it
       if (autoStartNext) {
         autoStartNext = false;
-        // Navigate to game screen and start
         showScreen('game');
-        startGame();
+        if (startBtn) {
+          // require explicit press now; keep enabled
+          startBtn.disabled = false;
+        } else {
+          startGame();
+        }
       }
     } catch (e) {
       console.error(e);
@@ -444,6 +453,7 @@
       paused = false;
       pauseBtn.disabled = false;
       restartBtn.disabled = false;
+      if (startBtn) startBtn.disabled = true;
       setStatus('プレイ中…');
       requestAnimationFrame(gameLoop);
     }).catch(err => {
@@ -522,6 +532,15 @@
   }
   pauseBtn.addEventListener('click', togglePause);
   restartBtn.addEventListener('click', restart);
+  if (startBtn) startBtn.addEventListener('click', startGame);
+  if (analyzeBtn) {
+    analyzeBtn.addEventListener('click', () => {
+      const hasUrl = urlInput && urlInput.value.trim().length > 0;
+      const hasFile = fileInput && fileInput.files && fileInput.files[0];
+      if (!hasUrl && !hasFile) { setStatus('曲を選択してください（assetsボタン・URL・ファイル）'); return; }
+      analyze();
+    });
+  }
   if (useAssetsBtn) {
     useAssetsBtn.addEventListener('click', () => {
       urlInput.value = 'assets/ovicekintoresong1.mp3';
@@ -541,9 +560,14 @@
       const lvl = btn.getAttribute('data-level') || 'normal';
       difficulty = lvl;
       NOTE_LEAD = (lvl === 'easy') ? 2.6 : (lvl === 'hard') ? 1.9 : 2.2;
-      autoStartNext = true;
-      showScreen('song'); // ensure status and source exist
-      analyze();
+      // New flow: require explicit start
+      if (!analyzed) {
+        showScreen('song');
+        setStatus('「譜面を自動生成」を押してからスタートしてください');
+      } else {
+        showScreen('game');
+        if (startBtn) startBtn.disabled = false; // ready to press
+      }
     });
   });
 
