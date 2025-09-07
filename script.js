@@ -37,7 +37,8 @@
   // Game state
   const LANES = 4;
   const KEYS = ['KeyD', 'KeyF', 'KeyJ', 'KeyK'];
-  const LANE_COLORS = ['#4fc3f7', '#ff8a65', '#aed581', '#ce93d8'];
+  // Gym-themed lane colors (plate colors): green, blue, yellow, red
+  const LANE_COLORS = ['#66bb6a', '#42a5f5', '#fdd835', '#ef5350'];
   const HITLINE_Y = H - 140;
   const NOTE_SPEED_LEAD = 2.2; // seconds from spawn to hitline
   const TRAVEL = H - 200; // pixels traveled during NOTE_SPEED_LEAD
@@ -291,8 +292,28 @@
       ctx.strokeRect(i * laneWidth + 0.5, 0.5, laneWidth - 1, H - 1);
     }
 
-    // Hit line
-    ctx.strokeStyle = '#ffffff33';
+    // Hit line band with hazard stripes (gym vibe)
+    const bandH = 26;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, HITLINE_Y - bandH, W, bandH * 2);
+    ctx.clip();
+    ctx.fillStyle = '#11141c';
+    ctx.fillRect(0, HITLINE_Y - bandH, W, bandH * 2);
+    // diagonal stripes
+    for (let x = -W; x < W * 2; x += 28) {
+      ctx.fillStyle = 'rgba(255, 160, 0, 0.22)';
+      ctx.beginPath();
+      ctx.moveTo(x, HITLINE_Y - bandH);
+      ctx.lineTo(x + 14, HITLINE_Y - bandH);
+      ctx.lineTo(x + 14 + bandH * 2, HITLINE_Y + bandH);
+      ctx.lineTo(x + bandH * 2, HITLINE_Y + bandH);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+    // Center hit line
+    ctx.strokeStyle = '#ffffff44';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(0, HITLINE_Y);
@@ -494,9 +515,9 @@
   // Position on-screen keys over the hitline
   function positionKeybar() {
     if (!keybarEl) return;
-    const rectParent = canvas.parentElement; // .game-wrap
     const left = canvas.offsetLeft;
-    const top = canvas.offsetTop + HITLINE_Y - 28; // half of ~56px
+    const kbH = keybarEl.offsetHeight || 96;
+    const top = canvas.offsetTop + HITLINE_Y - (kbH / 2);
     keybarEl.style.left = left + 'px';
     keybarEl.style.top = top + 'px';
     keybarEl.style.width = canvas.clientWidth + 'px';
