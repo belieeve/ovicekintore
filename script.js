@@ -62,10 +62,13 @@
   let playing = false;
   let paused = false;
   let analyzed = false;
+  let analyzing = false;
   let objectUrl = null; // for local file
   let bpmEstimate = null;
   let autoStartNext = false; // deprecated with explicit start button, kept for compatibility
   let difficulty = 'normal';
+  let lastAnalyzeKey = '';
+  let analyzeTimer = null;
 
   const scoreState = {
     score: 0,
@@ -263,11 +266,27 @@
     return notes;
   }
 
+  function currentSourceKey() {
+    const url = urlInput?.value?.trim();
+    const file = fileInput?.files && fileInput.files[0];
+    if (file) return `file:${file.name}:${file.size}`;
+    if (url) return `url:${url}`;
+    return '';
+  }
+
   async function analyze() {
     try {
-      setStatus('音源を取得中…');
+      if (analyzing) return;
+      const key = currentSourceKey();
+      if (!key) { setStatus('曲を選択してください'); return; }
+      if (key === lastAnalyzeKey && analyzed) {
+        if (startBtn) startBtn.disabled = false;
+        return;
+      }
+      analyzing = true;
+      setStatus('自動解析中…(音源取得)');
       const buf = await fetchArrayBufferFromSource();
-      setStatus('デコード中…');
+      setStatus('自動解析中…(デコード)');
       const ac = new (window.AudioContext || window.webkitAudioContext)();
       const audioBuffer = await ac.decodeAudioData(buf.slice(0));
       const { data, sampleRate } = downmixToMono(audioBuffer);
@@ -276,6 +295,7 @@
       bpmEstimate = bpm || null;
       chart = buildChartFromOnsets(peaks, bpmEstimate);
       analyzed = true;
+      lastAnalyzeKey = key;
       updateHUD();
       setStatus(`解析完了: ノーツ ${chart.length} 個${bpmEstimate ? ` / 推定BPM ${Math.round(bpmEstimate)}` : ''}`);
 
@@ -308,6 +328,8 @@
     } catch (e) {
       console.error(e);
       setStatus('解析に失敗しました: ' + (e?.message || e));
+    } finally {
+      analyzing = false;
     }
   }
 
@@ -453,7 +475,7 @@
 
   function startGame() {
     if (!analyzed || !audioEl.src) {
-      setStatus('先に「譜面を自動生成」を行ってください');
+      setStatus('解析が完了していません。少し待ってからスタートしてください');
       return;
     }
     // Reset note states
@@ -540,6 +562,10 @@
       const hasUrl = urlInput && urlInput.value.trim().length > 0;
       const hasFile = fileInput && fileInput.files && fileInput.files[0];
       if (!hasUrl && !hasFile) { setStatus('曲を選択してください（assetsボタン・URL・ファイル）'); return; }
+      // Kick off auto analyze if needed
+      if (!analyzed) {
+        scheduleAnalyze(true);
+      }
       showScreen('level');
     });
   }
@@ -554,33 +580,69 @@
       analyze();
     });
   }
+
+  // Auto-analyze on source changes
+  function scheduleAnalyze(immediate = false) {
+    const key = currentSourceKey();
+    if (!key) return;
+    if (immediate) {
+      analyze();
+      return;
+    }
+    clearTimeout(analyzeTimer);
+    analyzeTimer = setTimeout(() => {
+      if (key !== lastAnalyzeKey) analyze();
+    }, 900);
+  }
+  if (urlInput) {
+    urlInput.addEventListener('input', () => {
+      analyzed = false;
+      scheduleAnalyze(false);
+    });
+    urlInput.addEventListener('change', () => {
+      analyzed = false;
+      scheduleAnalyze(true);
+    });
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        analyzed = false;
+        scheduleAnalyze(true);
+      }
+    });
+  }
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      analyzed = false;
+      scheduleAnalyze(true);
+    });
+  }
   if (useAssetsBtn) {
     useAssetsBtn.addEventListener('click', () => {
       urlInput.value = 'assets/ovicekintoresong1.mp3';
       setStatus('『画面の向こう、汗をかこう！』を選択しました');
+      analyzed = false;
+      scheduleAnalyze(true);
     });
   }
   if (useAssetsBtn2) {
     useAssetsBtn2.addEventListener('click', () => {
       urlInput.value = 'assets/ovicekintoresong2.mp3';
       setStatus('『oviceで会えた奇跡』を選択しました');
+      analyzed = false;
+      scheduleAnalyze(true);
     });
   }
 
-  // Level selection → analyze → auto-start
+  // Level selection → enable Start (auto-analyze if needed)
   document.querySelectorAll('.level').forEach(btn => {
     btn.addEventListener('click', () => {
       const lvl = btn.getAttribute('data-level') || 'normal';
       difficulty = lvl;
       NOTE_LEAD = (lvl === 'easy') ? 2.6 : (lvl === 'hard') ? 1.9 : 2.2;
-      // New flow: require explicit start
-      if (!analyzed) {
-        showScreen('song');
-        setStatus('「譜面を自動生成」を押してからスタートしてください');
-      } else {
-        showScreen('game');
-        if (startBtn) startBtn.disabled = false; // ready to press
-      }
+      if (!analyzed) scheduleAnalyze(true);
+      showScreen('game');
+      if (startBtn) startBtn.disabled = !analyzed; // will be enabled after analyze()
     });
   });
 
