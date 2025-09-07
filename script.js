@@ -318,9 +318,9 @@
     // Lanes
     const laneWidth = W / LANES;
     for (let i = 0; i < LANES; i++) {
-      ctx.fillStyle = '#12141b';
+      ctx.fillStyle = '#eaf0ff';
       ctx.fillRect(i * laneWidth + 2, 0, laneWidth - 4, H);
-      ctx.strokeStyle = '#24273a';
+      ctx.strokeStyle = '#d6def7';
       ctx.strokeRect(i * laneWidth + 0.5, 0.5, laneWidth - 1, H - 1);
     }
 
@@ -330,7 +330,7 @@
     ctx.beginPath();
     ctx.rect(0, HITLINE_Y - bandH, W, bandH * 2);
     ctx.clip();
-    ctx.fillStyle = '#11141c';
+    ctx.fillStyle = '#f3f6ff';
     ctx.fillRect(0, HITLINE_Y - bandH, W, bandH * 2);
     // diagonal stripes
     for (let x = -W; x < W * 2; x += 28) {
@@ -346,10 +346,10 @@
     ctx.restore();
     // Center hit line + soft glow
     ctx.save();
-    ctx.strokeStyle = '#ffffff66';
+    ctx.strokeStyle = '#ff7a18bb';
     ctx.lineWidth = 2;
-    ctx.shadowBlur = 12;
-    ctx.shadowColor = '#fff';
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#ff7a18';
     ctx.beginPath();
     ctx.moveTo(0, HITLINE_Y);
     ctx.lineTo(W, HITLINE_Y);
