@@ -40,7 +40,6 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resizeCanvas();
-  positionKeybar();
 
   // Game state
   const LANES = 4;
