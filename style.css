@@ -66,3 +66,32 @@ h1{font-size:24px;margin:0 0 12px;display:flex;gap:10px;align-items:center}
 .level[data-level="easy"]{ border-color:#66bb6a }
 .level[data-level="normal"]{ border-color:#42a5f5 }
 .level[data-level="hard"]{ border-color:#ef5350 }
+
+/* Pop hero styles (Start screen) */
+#screen-start .hero-panel{
+  background: radial-gradient(600px 300px at 20% 0%, #1d2335aa 0, transparent 70%),
+              radial-gradient(500px 260px at 90% 15%, #2a1d13aa 0, transparent 70%),
+              linear-gradient(180deg, #161b28, #121623);
+  border:1px solid #2a3044;
+  box-shadow: 0 12px 30px #0007, inset 0 0 0 1px #0004;
+}
+.title-pop{
+  font-size: 28px;
+  background: linear-gradient(90deg, #ffeb3b, #ff6d00, #42a5f5);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 0 #0008);
+}
+.hero-media{ margin: 16px 0 }
+.hero-img{
+  max-width: 480px; width: 100%; height: auto; border-radius: 14px;
+  border: 2px solid #2b2e3f; box-shadow: 0 10px 24px #0008;
+}
+.btn-hero{
+  padding: 14px 22px; border-radius: 14px; border:2px solid transparent;
+  background: linear-gradient(135deg, #ff6d00, #ff3d00);
+  color:#fff; font-weight:900; letter-spacing:1px; font-size:16px; cursor:pointer;
+  box-shadow: 0 10px 24px #ff6d0044, inset 0 -4px 0 #0004;
+  transition: transform .06s ease, box-shadow .15s ease, filter .15s ease;
+}
+.btn-hero:hover{ transform: translateY(-2px); filter: brightness(1.05) }
+.btn-hero:active{ transform: translateY(1px); box-shadow: 0 6px 16px #ff6d0038, inset 0 2px 0 #0006 }
