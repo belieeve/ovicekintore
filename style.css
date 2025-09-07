@@ -19,3 +19,26 @@ h1{font-size:24px;margin:0 0 12px}
 .hud{display:flex;flex-direction:column;gap:6px}
 .hint{color:var(--muted)}
 
+/* On-screen keys */
+.keybar{
+  position:absolute; z-index:5;
+  display:grid; grid-template-columns:repeat(4, 1fr);
+  gap:10px; padding:0 8px;
+  /* JSで left/top/width を設定し、ヒットライン上に重ねる */
+}
+.keybar .key{
+  width:100%; height:56px; border-radius:12px;
+  background:#141726;border:2px solid #2b2e3f;color:var(--fg);
+  font-weight:700;font-size:18px;letter-spacing:1px;cursor:pointer;
+  transition:transform .03s ease, box-shadow .1s ease, background .1s ease, color .1s ease, border-color .1s ease;
+}
+.keybar .key[data-lane="0"]{ border-color: var(--lane1); }
+.keybar .key[data-lane="1"]{ border-color: var(--lane2); }
+.keybar .key[data-lane="2"]{ border-color: var(--lane3); }
+.keybar .key[data-lane="3"]{ border-color: var(--lane4); }
+
+.keybar .key.active{ transform: translateY(2px); color:#000; }
+.keybar .key.active[data-lane="0"]{ background: var(--lane1); box-shadow:0 0 18px #4fc3f788; }
+.keybar .key.active[data-lane="1"]{ background: var(--lane2); box-shadow:0 0 18px #ff8a6588; }
+.keybar .key.active[data-lane="2"]{ background: var(--lane3); box-shadow:0 0 18px #aed58188; }
+.keybar .key.active[data-lane="3"]{ background: var(--lane4); box-shadow:0 0 18px #ce93d888; }

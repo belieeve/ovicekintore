@@ -12,7 +12,8 @@
       <div class="controls">
         <div class="row">
           <label>MP3のURL（GitHub Raw推奨）</label>
-          <input id="urlInput" type="url" placeholder="https://raw.githubusercontent.com/user/repo/branch/path/song.mp3" />
+          <input id="urlInput" type="url" placeholder="https://raw.githubusercontent.com/user/repo/branch/path/song.mp3 または assets/sample.mp3" />
+          <button id="useAssetsBtn" title="assets/sample.mp3 をセット">assetsサンプル</button>
         </div>
         <div class="row">
           <label>またはローカルMP3を選択</label>
@@ -29,6 +30,12 @@
 
       <div class="game-wrap">
         <canvas id="game" width="480" height="720"></canvas>
+        <div class="keybar" id="keybar" aria-label="On-screen keys">
+          <button class="key" data-lane="0" aria-label="Lane 1 (D)">D</button>
+          <button class="key" data-lane="1" aria-label="Lane 2 (F)">F</button>
+          <button class="key" data-lane="2" aria-label="Lane 3 (J)">J</button>
+          <button class="key" data-lane="3" aria-label="Lane 4 (K)">K</button>
+        </div>
         <div class="hud">
           <div>Score: <span id="score">0</span></div>
           <div>Combo: <span id="combo">0</span> / Max <span id="maxCombo">0</span></div>
@@ -46,4 +53,3 @@
     <script src="script.js"></script>
   </body>
   </html>
-

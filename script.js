@@ -17,6 +17,8 @@
   const accEl = document.getElementById('acc');
   const bpmEl = document.getElementById('bpm');
   const audioEl = document.getElementById('player');
+  const keybarEl = document.getElementById('keybar');
+  const useAssetsBtn = document.getElementById('useAssetsBtn');
 
   // Canvas scaling for HiDPI
   function resizeCanvas() {
@@ -29,6 +31,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resizeCanvas();
+  positionKeybar();
 
   // Game state
   const LANES = 4;
@@ -430,20 +433,72 @@
   window.addEventListener('keydown', (e) => {
     const lane = KEYS.indexOf(e.code);
     if (lane !== -1) {
+      if (e.repeat) return; // 長押しのリピート入力は無視
       e.preventDefault();
+      // 視覚: キーを点灯
+      const btn = keybarEl?.querySelector(`.key[data-lane="${lane}"]`);
+      if (btn) btn.classList.add('active');
       if (!playing) return;
       const t = audioEl.currentTime || 0;
       judgeKey(lane, t);
     }
   }, { passive: false });
 
+  window.addEventListener('keyup', (e) => {
+    const lane = KEYS.indexOf(e.code);
+    if (lane !== -1) {
+      const btn = keybarEl?.querySelector(`.key[data-lane=\"${lane}\"]`);
+      if (btn) btn.classList.remove('active');
+    }
+  });
+
   analyzeBtn.addEventListener('click', analyze);
   startBtn.addEventListener('click', startGame);
   pauseBtn.addEventListener('click', togglePause);
   restartBtn.addEventListener('click', restart);
+  if (useAssetsBtn) {
+    useAssetsBtn.addEventListener('click', () => {
+      urlInput.value = 'assets/sample.mp3';
+      setStatus('assets/sample.mp3 をURL欄にセットしました');
+    });
+  }
+
+  // Click/Touch on on-screen keys
+  if (keybarEl) {
+    const press = (lane) => {
+      const btn = keybarEl.querySelector(`.key[data-lane=\"${lane}\"]`);
+      if (btn) btn.classList.add('active');
+      if (playing) {
+        const t = audioEl.currentTime || 0;
+        judgeKey(lane, t);
+      }
+      // 小さな遅延で解除（タップ視覚）
+      setTimeout(() => { if (btn) btn.classList.remove('active'); }, 80);
+    };
+    keybarEl.addEventListener('pointerdown', (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      const laneStr = target.getAttribute('data-lane');
+      if (laneStr == null) return;
+      e.preventDefault();
+      press(parseInt(laneStr, 10));
+    });
+  }
+  // Position on-screen keys over the hitline
+  function positionKeybar() {
+    if (!keybarEl) return;
+    const rectParent = canvas.parentElement; // .game-wrap
+    const left = canvas.offsetLeft;
+    const top = canvas.offsetTop + HITLINE_Y - 28; // half of ~56px
+    keybarEl.style.left = left + 'px';
+    keybarEl.style.top = top + 'px';
+    keybarEl.style.width = canvas.clientWidth + 'px';
+  }
 
   // Clean object URL on unload
   window.addEventListener('beforeunload', () => {
     if (objectUrl) URL.revokeObjectURL(objectUrl);
   });
+
+  window.addEventListener('resize', positionKeybar);
 })();
