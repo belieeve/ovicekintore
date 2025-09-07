@@ -9,8 +9,8 @@
    - GitHubに置いたMP3のRAW URLを入力欄に貼る
      - 例: `https://raw.githubusercontent.com/<user>/<repo>/<branch>/path/to/song.mp3`
    - ローカルのMP3ファイルを選択
-   - リポジトリ内 `assets/sample.mp3` を利用（相対URL）
-     - 「assetsサンプル」ボタンでURL欄に `assets/sample.mp3` を自動入力
+   - リポジトリ内 `assets/ovicekintoresong1.mp3` を利用（相対URL）
+     - 「assetsサンプル」ボタンでURL欄に `assets/ovicekintoresong1.mp3` を自動入力
      - 実際のMP3は `assets/` に配置してください（このリポジトリには空フォルダのみ同梱）
 3. 「譜面を自動生成」を押すと、音源を解析してノーツが作成されます。
 4. 「スタート」でプレイ開始。キーボード D / F / J / K で叩きます。

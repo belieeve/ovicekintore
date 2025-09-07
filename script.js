@@ -458,8 +458,8 @@
   restartBtn.addEventListener('click', restart);
   if (useAssetsBtn) {
     useAssetsBtn.addEventListener('click', () => {
-      urlInput.value = 'assets/sample.mp3';
-      setStatus('assets/sample.mp3 をURL欄にセットしました');
+      urlInput.value = 'assets/ovicekintoresong1.mp3';
+      setStatus('assets/ovicekintoresong1.mp3 をURL欄にセットしました');
     });
   }
 
